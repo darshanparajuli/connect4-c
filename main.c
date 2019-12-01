@@ -344,6 +344,11 @@ void animate_winner(GameState *game_state)
     timeout(ANIM_TIME / 2);
 }
 
+bool is_drop_pos_valid(GameState *game_state, int pos)
+{
+    return get_valid_drop_pos_y(game_state->board, pos) != -1;
+}
+
 void drop(GameState *game_state)
 {
     int drop_pos_y = get_valid_drop_pos_y(game_state->board, game_state->drop_pos_x);
@@ -443,8 +448,11 @@ void input(GameState *game_state)
             int pos = ch - '1';
             if (!game_over)
             {
-                game_state->drop_pos_x = pos;
-                drop(game_state);
+                if (is_drop_pos_valid(game_state, pos))
+                {
+                    game_state->drop_pos_x = pos;
+                    drop(game_state);
+                }
             }
         }
         break;
