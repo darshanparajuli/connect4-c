@@ -336,11 +336,12 @@ Turn get_next_turn(Turn turn)
 
 void animate_winner(GameState *game_state)
 {
-    timeout(ANIM_TIME / 2);
-    game_state->winner_hidden = true;
+    game_state->winner_hidden = false;
     game_state->animating = true;
     game_state->winner_cell_state = get_cell_state_from_turn(game_state->turn);
     clock_gettime(CLOCK_MONOTONIC_RAW, &game_state->animation_start_time);
+
+    timeout(ANIM_TIME / 2);
 }
 
 void drop(GameState *game_state)
