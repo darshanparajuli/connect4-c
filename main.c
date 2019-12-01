@@ -43,7 +43,7 @@ Window create_window()
 
     getmaxyx(stdscr, win.theight, win.twidth);
     win.x = win.twidth / 2 - win.width / 2;
-    win.y = win.theight / 2 - win.height / 2;
+    win.y = 4 + win.theight / 2 - win.height / 2;
 
     return win;
 }
