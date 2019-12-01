@@ -386,7 +386,8 @@ void input(GameState *game_state)
 {
     bool game_over = game_state->winner != WINNER_NONE;
 
-    switch (getch())
+    int ch = getch();
+    switch (ch)
     {
         case 'q':
         {
@@ -426,6 +427,23 @@ void input(GameState *game_state)
         {
             if (!game_over)
             {
+                drop(game_state);
+            }
+        }
+        break;
+
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        {
+            int pos = ch - '1';
+            if (!game_over)
+            {
+                game_state->drop_pos_x = pos;
                 drop(game_state);
             }
         }
@@ -531,6 +549,19 @@ bool is_pos_winner_pos(GameState *game_state, int x, int y)
     return false;
 }
 
+void draw_drop_pos_hints(Window *win, int yoff)
+{
+    char buf[COLS * 2 + 1];
+    memset(buf, ' ', sizeof(buf) - 1);
+    for (int i = 0; i < COLS * 2; i += 2)
+    {
+        buf[i] = '1' + i / 2;
+    }
+    move(win->y - yoff, win->x);
+    buf[ArrayCount(buf) - 1] = 0;
+    addstr(buf);
+}
+
 void draw(Window *win, GameState *game_state)
 {
     if (game_state->animating)
@@ -564,18 +595,20 @@ void draw(Window *win, GameState *game_state)
         }
     }
 
-    draw_title(win, 8);
+    draw_title(win, 9);
     if (game_state->winner == WINNER_NONE)
     {
-        draw_turn(win, 3, game_state->turn);
+        draw_turn(win, 4, game_state->turn);
     }
     else
     {
-        draw_winner(win, 3, game_state->winner);
+        draw_winner(win, 4, game_state->winner);
     }
 
+    draw_drop_pos_hints(win, 1);
+
     // draw drop position
-    move(win->y - 1, win->x + game_state->drop_pos_x * 2);
+    move(win->y - 2, win->x + game_state->drop_pos_x * 2);
     addstr(get_player_ch(game_state->turn));
 
     // draw the board
